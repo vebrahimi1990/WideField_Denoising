@@ -11,8 +11,6 @@ from keras.models import Model
 def kinit(size, filters):
     n = 1 / np.sqrt(size * size * filters)
     w_init = tf.keras.initializers.RandomUniform(minval=-n, maxval=n)
-    # w_init = 'random_normal'
-    # w_init = 'glorot_uniform'
     return w_init
 
 
@@ -120,11 +118,6 @@ def make_generator(inputs, filters, num_filters, filters_cab, num_RG, num_RCAB, 
     skip_x.reverse()
     skip_y.reverse()
 
-    # for i in range(len(filters) + 1):
-    #     skip_x[i] = UpSampling2D(size=2 ** i, data_format='channels_last')(skip_x[i])
-    #     skip_x[i] = Conv2D(filters=num_filters, kernel_size=1, kernel_initializer=kinit(1, num_filters))(skip_x[i])
-    #     skip_y[i] = UpSampling2D(size=2 ** i, data_format='channels_last')(skip_y[i])
-    #     skip_y[i] = Conv2D(filters=num_filters, kernel_size=1, kernel_initializer=kinit(1, num_filters))(skip_y[i])
     y = make_RCAN(inputs=y, filters=num_filters, filters_cab=filters_cab, num_RG=num_RG, num_RCAB=num_RCAB,
                   kernel=kernel_shape, en_out=skip_x, de_out=skip_y, dropout=dropout)
     model = Model(inputs=[inputs], outputs=[x, y])

@@ -8,8 +8,8 @@ def norm_mse(prediction, gt):
     norm = tf.squeeze(norm)
     norm = tf.pow(norm, 2)
     norm = tf.math.reduce_sum(norm)
-    norm_mse = tf.math.divide(mse, norm)
-    return norm_mse.numpy()
+    nmse = tf.math.divide(mse, norm)
+    return nmse.numpy()
 
 
 def nmse_psnr_ssim(prediction, gt):

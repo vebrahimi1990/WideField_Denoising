@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/WideField Denoising.iml" filepath="$PROJECT_DIR$/.idea/WideField Denoising.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/UNet_RCAN_Denoising.iml" filepath="$PROJECT_DIR$/.idea/UNet_RCAN_Denoising.iml" />
     </modules>
   </component>
 </project>

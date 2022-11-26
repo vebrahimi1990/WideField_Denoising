@@ -1,22 +1,17 @@
-import tensorflow as tf
 import numpy as np
-from keras.models import Model
+import tensorflow as tf
 from keras.activations import sigmoid
-from keras.layers import Dropout, LeakyReLU, ReLU, UpSampling2D
+from keras.layers import Dropout, LeakyReLU
 from keras.layers.convolutional import Conv2D
-from keras.layers.merge import concatenate, add, multiply
-from keras.layers.pooling import MaxPooling2D, GlobalAveragePooling2D
+from keras.layers.merge import add, multiply
+from keras.layers.pooling import GlobalAveragePooling2D
 from keras.models import Model
-
-
-# w_init = 'glorot_uniform'
 
 
 def kinit(size, filters):
     n = 1 / np.sqrt(size * size * filters)
     w_init = tf.keras.initializers.RandomUniform(minval=-n, maxval=n)
-    # w_init = 'random_normal'
-    # w_init = 'glorot_uniform'
+
     return w_init
 
 

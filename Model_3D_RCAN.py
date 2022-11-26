@@ -14,19 +14,6 @@ def kinit(size, filters):
     return w_init
 
 
-def conv_block(inputs, filters, kernel, dropout):
-    x = Conv3D(filters=filters, kernel_size=kernel, kernel_initializer=kinit(kernel, filters),
-               bias_initializer=kinit(kernel, filters), padding="same")(inputs)
-    x = LeakyReLU()(x)
-    x = Conv3D(filters=filters, kernel_size=kernel, kernel_initializer=kinit(kernel, filters),
-               bias_initializer=kinit(kernel, filters), padding="same")(x)
-    y = Conv3D(filters=filters, kernel_size=3, kernel_initializer=kinit(kernel, filters),
-               bias_initializer=kinit(kernel, filters), padding="same")(inputs)
-    x = add([x, y])
-    x = LeakyReLU()(x)
-    return x
-
-
 def CAB(inputs, filters_cab, filters, kernel, dropout):
     x = Conv3D(filters=filters, kernel_size=kernel, kernel_initializer=kinit(kernel, filters),
                bias_initializer=kinit(kernel, filters), padding="same")(inputs)
@@ -77,31 +64,7 @@ def make_RCAN(inputs, filters, filters_cab, num_RG, num_RCAB, kernel, dropout):
 
 
 def make_generator(inputs, filters, num_filters, filters_cab, num_RG, num_RCAB, kernel_shape, dropout):
-    skip_x = []
-    x = inputs
-    for i, f in enumerate(filters):
-        x = conv_block(x, f, kernel_shape, dropout)
-        x = Dropout(dropout)(x)
-        skip_x.append(x)
-        x = MaxPooling3D((2, 2, 2))(x)
-
-    x = conv_block(x, 2 * filters[-1], kernel_shape, dropout)
-    filters.reverse()
-    skip_x.reverse()
-
-    for i, f in enumerate(filters):
-        x = UpSampling3D(size=(2, 2, 2), data_format='channels_last')(x)
-        xs = skip_x[i]
-        xs = CAB(xs, filters_cab=4, filters=f, kernel=3, dropout=dropout)
-        x = concatenate([x, xs])
-        x = conv_block(x, f, kernel_shape, dropout)
-        x = Dropout(dropout)(x)
-    x = Conv3D(filters=1, kernel_size=1, kernel_initializer=kinit(3, filters[0]), bias_initializer=kinit(3, 1),
-               padding="same")(x)
-    y = concatenate([x, inputs])
-    y = make_RCAN(inputs=y, filters=num_filters, filters_cab=filters_cab, num_RG=num_RG, num_RCAB=num_RCAB,
+    y = make_RCAN(inputs=inputs, filters=num_filters, filters_cab=filters_cab, num_RG=num_RG, num_RCAB=num_RCAB,
                   kernel=kernel_shape, dropout=dropout)
-
-    model = Model(inputs=[inputs], outputs=[x, y])
-
+    model = Model(inputs=[inputs], outputs=[y])
     return model
